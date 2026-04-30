@@ -1,91 +1,39 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intrusion Status</title>
-  <style>
-    :root {
-      --safe: #22c55e;
-      --danger: #ef4444;
-      --bg: #f8fafc;
-      --text: #0f172a;
-    }
+<html>
+  <body>
 
-    * {
-      box-sizing: border-box;
-    }
+    <div id="icon" style="
+      width:200px;
+      height:200px;
+      border-radius:50%;
+      background:green;
+      margin:200px auto;
+    "></div>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: var(--bg);
-      font-family: Arial, sans-serif;
-      color: var(--text);
-    }
+    <p id="text"></p>
 
-    .panel {
-      text-align: center;
-      padding: 24px;
-    }
+    <script>
+      console.log("script loaded");
 
-    .icon {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      background: var(--safe);
-      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.15);
-      transition: background 0.2s ease, box-shadow 0.2s ease;
-    }
+      setInterval(async () => {
+        console.log("fetching...");
 
-    .icon.intrusion {
-      background: var(--danger);
-      box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.2);
-    }
+        const res = await fetch("http://localhost:8000/api/intrusion");
+        const data = await res.json();
 
-    .message {
-      min-height: 1.5em;
-      margin: 0 0 16px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--danger);
-    }
+        console.log(data);
 
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 1rem;
-      font-weight: 600;
-      background: #1d4ed8;
-      color: #ffffff;
-      cursor: pointer;
-    }
+        const icon = document.getElementById("icon");
+        const text = document.getElementById("text");
 
-    button:hover {
-      background: #1e40af;
-    }
-  </style>
-</head>
-<body>
-  <main class="panel">
-    <div id="statusIcon" class="icon" aria-label="상태 아이콘"></div>
-    <p id="statusText" class="message" aria-live="polite"></p>
-    <button id="simulateBtn" type="button">침입 시뮬레이션</button>
-  </main>
+        if (data.intrusion) {
+          icon.style.backgroundColor = "red";
+          text.innerText = "침입이 감지되었습니다";
+        } else {
+          icon.style.backgroundColor = "green";
+          text.innerText = "";
+        }
+      }, 2000);
+    </script>
 
-  <script>
-    const statusIcon = document.getElementById("statusIcon");
-    const statusText = document.getElementById("statusText");
-    const simulateBtn = document.getElementById("simulateBtn");
-
-    simulateBtn.addEventListener("click", () => {
-      statusIcon.classList.add("intrusion");
-      statusText.textContent = "침입이 감지되었습니다";
-    });
-  </script>
-</body>
+  </body>
 </html>
