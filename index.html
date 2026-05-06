@@ -15,8 +15,9 @@
       console.log("script loaded");
 
       setInterval(async () => {
-        console.log("fetching...");
+      console.log("fetching...");
 
+      try {
         const res = await fetch("http://localhost:8000/api/intrusion");
         const data = await res.json();
 
@@ -27,12 +28,17 @@
 
         if (data.intrusion) {
           icon.style.backgroundColor = "red";
-          text.innerText = "침입이 감지되었습니다";
+         text.innerText = "침입이 감지되었습니다";
         } else {
           icon.style.backgroundColor = "green";
           text.innerText = "";
-        }
-      }, 2000);
+       }
+
+      } catch (e) {
+       console.error("서버 연결 실패", e);
+     }
+
+     }, 2000);
     </script>
 
   </body>
